@@ -7,6 +7,7 @@ import {
   PROVING_STATUS,
   type ProvingSuccess,
   type ProvingTicket,
+  Signature,
   type Tx,
   type UnencryptedL2Log,
   UnencryptedTxL2Logs,
@@ -19,9 +20,9 @@ import {
   Fr,
   GasFees,
   GlobalVariables,
-  IS_DEV_NET,
   NUMBER_OF_L1_L2_MESSAGES_PER_ROLLUP,
 } from '@aztec/circuits.js';
+import { Buffer32 } from '@aztec/foundation/buffer';
 import { times } from '@aztec/foundation/collection';
 import { randomBytes } from '@aztec/foundation/crypto';
 import { type Writeable } from '@aztec/foundation/types';
@@ -39,6 +40,10 @@ import { type GlobalVariableBuilder } from '../global_variable_builder/global_bu
 import { type L1Publisher } from '../publisher/l1-publisher.js';
 import { TxValidatorFactory } from '../tx_validator/tx_validator_factory.js';
 import { Sequencer } from './sequencer.js';
+
+const mockedSignatures = new Signature(Buffer32.fromField(Fr.random()), Buffer32.fromField(Fr.random()), 27, false);
+
+const getAttestations = () => [mockedSignatures];
 
 describe('sequencer', () => {
   let publisher: MockProxy<L1Publisher>;
@@ -64,14 +69,6 @@ describe('sequencer', () => {
   const gasFees = GasFees.empty();
 
   // We mock an attestation
-  const mockedAttestation = {
-    isEmpty: false,
-    v: 27,
-    r: Fr.random().toString(),
-    s: Fr.random().toString(),
-  };
-
-  const getAttestations = () => (IS_DEV_NET ? undefined : [mockedAttestation]);
 
   beforeEach(() => {
     lastBlockNumber = 0;
@@ -83,6 +80,8 @@ describe('sequencer', () => {
     globalVariableBuilder = mock<GlobalVariableBuilder>();
     merkleTreeOps = mock<MerkleTreeOperations>();
     blockSimulator = mock<BlockSimulator>();
+
+    validatorClient = mock<ValidatorClient>();
 
     p2p = mock<P2P>({
       getStatus: () => Promise.resolve({ state: P2PClientState.IDLE, syncedToL2Block: lastBlockNumber }),
@@ -612,5 +611,9 @@ class TestSubject extends Sequencer {
 
   public override initialSync(): Promise<void> {
     return super.initialSync();
+  }
+
+  public override collectAttestations(_block: L2Block): Promise<Signature[] | undefined> {
+    return Promise.resolve(getAttestations());
   }
 }

@@ -11,7 +11,6 @@ import {
   TxStatus,
   sleep,
 } from '@aztec/aztec.js';
-import { IS_DEV_NET } from '@aztec/circuits.js';
 import { RollupAbi } from '@aztec/l1-artifacts';
 import { type BootstrapNode } from '@aztec/p2p';
 import { type PXEService, createPXEService, getPXEServiceConfig as getRpcConfig } from '@aztec/pxe';
@@ -58,7 +57,9 @@ describe('e2e_p2p_network', () => {
       client: deployL1ContractsValues.walletClient,
     });
 
-    if (IS_DEV_NET) {
+    const isDevNet = await rollup.read.isDevNet();
+
+    if (isDevNet) {
       // Add just ONE of the peers as sequencer, he will be the proposer all blocks.
       const hdAccount = mnemonicToAccount(MNEMONIC, { addressIndex: 1 });
       const publisherPrivKey = Buffer.from(hdAccount.getHdKey().privateKey!);
@@ -114,7 +115,7 @@ describe('e2e_p2p_network', () => {
       bootstrapNodeEnr,
       NUM_NODES,
       BOOT_NODE_UDP_PORT,
-      /*activate validators=*/ !IS_DEV_NET,
+      true /*activateValidators*/,
     );
 
     // wait a bit for peers to discover each other

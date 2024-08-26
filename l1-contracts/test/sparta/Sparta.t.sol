@@ -24,8 +24,6 @@ import {IFeeJuicePortal} from "../../src/core/interfaces/IFeeJuicePortal.sol";
 /**
  * We are using the same blocks as from Rollup.t.sol.
  * The tests in this file is testing the sequencer selection
- *
- * We will skip these test if we are running with IS_DEV_NET = true
  */
 
 contract SpartaTest is DecoderBase {
@@ -65,6 +63,7 @@ contract SpartaTest is DecoderBase {
     rollup = new Rollup(
       registry, availabilityOracle, IFeeJuicePortal(address(0)), bytes32(0), address(this)
     );
+    rollup.setDevNet(false);
     inbox = Inbox(address(rollup.INBOX()));
     outbox = Outbox(address(rollup.OUTBOX()));
 
@@ -83,10 +82,6 @@ contract SpartaTest is DecoderBase {
   }
 
   function testProposerForNonSetupEpoch(uint8 _epochsToJump) public setup(4) {
-    if (Constants.IS_DEV_NET == 1) {
-      return;
-    }
-
     uint256 pre = rollup.getCurrentEpoch();
     vm.warp(
       block.timestamp + uint256(_epochsToJump) * rollup.EPOCH_DURATION() * rollup.SLOT_DURATION()
@@ -104,10 +99,6 @@ contract SpartaTest is DecoderBase {
   }
 
   function testValidatorSetLargerThanCommittee(bool _insufficientSigs) public setup(100) {
-    if (Constants.IS_DEV_NET == 1) {
-      return;
-    }
-
     assertGt(rollup.getValidators().length, rollup.TARGET_COMMITTEE_SIZE(), "Not enough validators");
     _testBlock("mixed_block_1", false, 0, false); // We run a block before the epoch with validators
 
@@ -124,28 +115,16 @@ contract SpartaTest is DecoderBase {
   }
 
   function testHappyPath() public setup(4) {
-    if (Constants.IS_DEV_NET == 1) {
-      return;
-    }
-
     _testBlock("mixed_block_1", false, 0, false); // We run a block before the epoch with validators
     _testBlock("mixed_block_2", false, 3, false); // We need signatures!
   }
 
   function testInvalidProposer() public setup(4) {
-    if (Constants.IS_DEV_NET == 1) {
-      return;
-    }
-
     _testBlock("mixed_block_1", false, 0, false); // We run a block before the epoch with validators
     _testBlock("mixed_block_2", true, 3, true); // We need signatures!
   }
 
   function testInsufficientSigs() public setup(4) {
-    if (Constants.IS_DEV_NET == 1) {
-      return;
-    }
-
     _testBlock("mixed_block_1", false, 0, false); // We run a block before the epoch with validators
     _testBlock("mixed_block_2", true, 2, false); // We need signatures!
   }

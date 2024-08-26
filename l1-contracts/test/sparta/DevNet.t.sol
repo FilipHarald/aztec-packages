@@ -23,8 +23,6 @@ import {IFeeJuicePortal} from "../../src/core/interfaces/IFeeJuicePortal.sol";
 /**
  * We are using the same blocks as from Rollup.t.sol.
  * The tests in this file is testing the sequencer selection
- *
- * We will skip these test if we are running with IS_DEV_NET = true
  */
 contract DevNetTest is DecoderBase {
   Registry internal registry;
@@ -59,6 +57,7 @@ contract DevNetTest is DecoderBase {
     rollup = new Rollup(
       registry, availabilityOracle, IFeeJuicePortal(address(0)), bytes32(0), address(this)
     );
+    rollup.setDevNet(true);
     inbox = Inbox(address(rollup.INBOX()));
     outbox = Outbox(address(rollup.OUTBOX()));
 
@@ -77,10 +76,6 @@ contract DevNetTest is DecoderBase {
   }
 
   function testProposerForNonSetupEpoch(uint8 _epochsToJump) public setup(5) {
-    if (Constants.IS_DEV_NET == 0) {
-      return;
-    }
-
     uint256 pre = rollup.getCurrentEpoch();
     vm.warp(
       block.timestamp + uint256(_epochsToJump) * rollup.EPOCH_DURATION() * rollup.SLOT_DURATION()
@@ -98,18 +93,10 @@ contract DevNetTest is DecoderBase {
   }
 
   function testNoValidators() public setup(0) {
-    if (Constants.IS_DEV_NET == 0) {
-      return;
-    }
-
     _testBlock("mixed_block_1", false, false);
   }
 
   function testInvalidProposer() public setup(1) {
-    if (Constants.IS_DEV_NET == 0) {
-      return;
-    }
-
     _testBlock("mixed_block_1", true, true);
   }
 

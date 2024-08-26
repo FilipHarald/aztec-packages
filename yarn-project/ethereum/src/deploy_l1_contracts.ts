@@ -147,7 +147,13 @@ export const deployL1Contracts = async (
   chain: Chain,
   logger: DebugLogger,
   contractsToDeploy: L1ContractArtifactsForDeployment,
-  args: { l2FeeJuiceAddress: AztecAddress; vkTreeRoot: Fr; assumeProvenUntil?: number; salt: number | undefined },
+  args: {
+    l2FeeJuiceAddress: AztecAddress;
+    vkTreeRoot: Fr;
+    assumeProvenUntil?: number;
+    salt: number | undefined;
+    isDevNet?: boolean;
+  },
 ): Promise<DeployL1Contracts> => {
   // We are assuming that you are running this on a local anvil node which have 1s block times
   // To align better with actual deployment, we update the block interval to 12s
@@ -234,38 +240,33 @@ export const deployL1Contracts = async (
   ]);
   logger.info(`Deployed Rollup at ${rollupAddress}`);
 
+  const rollupAsOwner = getContract({
+    address: getAddress(rollupAddress.toString()),
+    abi: contractsToDeploy.rollup.contractAbi,
+    client: walletClient,
+  });
+  const rollupAsPublic = getContract({
+    address: getAddress(rollupAddress.toString()),
+    abi: contractsToDeploy.rollup.contractAbi,
+    client: publicClient,
+  });
+
+  if (args.isDevNet === false) {
+    await rollupAsOwner.write.setDevNet([false], { account });
+    logger.info(`Set Rollup as not a devnet`);
+  }
+
   // Set initial blocks as proven if requested
   if (args.assumeProvenUntil && args.assumeProvenUntil > 0) {
-    const rollup = getContract({
-      address: getAddress(rollupAddress.toString()),
-      abi: contractsToDeploy.rollup.contractAbi,
-      client: walletClient,
-    });
-    await rollup.write.setAssumeProvenUntilBlockNumber([BigInt(args.assumeProvenUntil)], { account });
+    await rollupAsOwner.write.setAssumeProvenUntilBlockNumber([BigInt(args.assumeProvenUntil)], { account });
     logger.info(`Set Rollup assumedProvenUntil to ${args.assumeProvenUntil}`);
   }
 
   // Inbox and Outbox are immutable and are deployed from Rollup's constructor so we just fetch them from the contract.
-  let inboxAddress!: EthAddress;
-  {
-    const rollup = getContract({
-      address: getAddress(rollupAddress.toString()),
-      abi: contractsToDeploy.rollup.contractAbi,
-      client: publicClient,
-    });
-    inboxAddress = EthAddress.fromString((await rollup.read.INBOX([])) as any);
-  }
+  const inboxAddress = EthAddress.fromString((await rollupAsPublic.read.INBOX([])) as any);
   logger.info(`Inbox available at ${inboxAddress}`);
 
-  let outboxAddress!: EthAddress;
-  {
-    const rollup = getContract({
-      address: getAddress(rollupAddress.toString()),
-      abi: contractsToDeploy.rollup.contractAbi,
-      client: publicClient,
-    });
-    outboxAddress = EthAddress.fromString((await rollup.read.OUTBOX([])) as any);
-  }
+  const outboxAddress = EthAddress.fromString((await rollupAsPublic.read.OUTBOX([])) as any);
   logger.info(`Outbox available at ${outboxAddress}`);
 
   // We need to call a function on the registry to set the various contract addresses.
