@@ -1,5 +1,37 @@
 # Changelog
 
+## [0.50.2](https://github.com/AztecProtocol/aztec-packages/compare/aztec-packages-v0.50.1...aztec-packages-v0.50.2) (2024-08-26)
+
+
+### Features
+
+* Added indirect const instruction ([#8065](https://github.com/AztecProtocol/aztec-packages/issues/8065)) ([0263b4c](https://github.com/AztecProtocol/aztec-packages/commit/0263b4c8961a751961b0b9ec98b441e598d1ca4e))
+* Aztec-network helm chart ([#8078](https://github.com/AztecProtocol/aztec-packages/issues/8078)) ([4b6da5f](https://github.com/AztecProtocol/aztec-packages/commit/4b6da5fad75559172fcd6eae3d1893f7db86e28c))
+* Frontier lib &gt; frontier contract ([#8172](https://github.com/AztecProtocol/aztec-packages/issues/8172)) ([717cf3d](https://github.com/AztecProtocol/aztec-packages/commit/717cf3d4919f8e634d3dff560a59ff141815b416))
+* Optimize to_radix ([#8073](https://github.com/AztecProtocol/aztec-packages/issues/8073)) ([8baeffd](https://github.com/AztecProtocol/aztec-packages/commit/8baeffd1239a20ca3cbc4071f7d7da974eff709d))
+* **p2p:** Request response skeleton ([#8076](https://github.com/AztecProtocol/aztec-packages/issues/8076)) ([bfbc4b2](https://github.com/AztecProtocol/aztec-packages/commit/bfbc4b2126c0fed038d46575a60311234a1a484a))
+* Test against Sepolia ([#8176](https://github.com/AztecProtocol/aztec-packages/issues/8176)) ([758c723](https://github.com/AztecProtocol/aztec-packages/commit/758c723fbf9bcd778378f7f3f7525552ae134f36))
+* Use oink in IVC ([#8161](https://github.com/AztecProtocol/aztec-packages/issues/8161)) ([3540f8e](https://github.com/AztecProtocol/aztec-packages/commit/3540f8ea961b0001ec9f497e2ff4d00c894ce6e4))
+
+
+### Bug Fixes
+
+* Add missing classes to rpc serialisation ([#8166](https://github.com/AztecProtocol/aztec-packages/issues/8166)) ([bd6626c](https://github.com/AztecProtocol/aztec-packages/commit/bd6626c9c9a9124582c202b5ded07230acb62d5a))
+* Add validation of address when registering a contract ([#8038](https://github.com/AztecProtocol/aztec-packages/issues/8038)) ([9f57fff](https://github.com/AztecProtocol/aztec-packages/commit/9f57fff7a9f6b94bf467213c748e8f2a1969511e))
+* Pass var.DEPLOY_TAG to manifest jobs ([#8160](https://github.com/AztecProtocol/aztec-packages/issues/8160)) ([42ff5ee](https://github.com/AztecProtocol/aztec-packages/commit/42ff5eea357152ae7d991eabc16cf9b01885c188))
+* Releasing devnet docker img ([#8168](https://github.com/AztecProtocol/aztec-packages/issues/8168)) ([7f95ee7](https://github.com/AztecProtocol/aztec-packages/commit/7f95ee75e14e82915c480fbb65c325052ebec9c3))
+* Skipping publish job ([#8159](https://github.com/AztecProtocol/aztec-packages/issues/8159)) ([7cd2d30](https://github.com/AztecProtocol/aztec-packages/commit/7cd2d306a9de6e209722bbe6139a4d4f09d60439))
+* Start trace exporter only if required ([#8147](https://github.com/AztecProtocol/aztec-packages/issues/8147)) ([4e63106](https://github.com/AztecProtocol/aztec-packages/commit/4e63106a43b3f16d46baa03552a355b9d4ab3e7a))
+
+
+### Miscellaneous
+
+* Generate public tail hints in noir ([#8113](https://github.com/AztecProtocol/aztec-packages/issues/8113)) ([576e217](https://github.com/AztecProtocol/aztec-packages/commit/576e217b162867742d599b5e131db53bfdd18f11))
+* Oink takes directly populates an instance ([#8170](https://github.com/AztecProtocol/aztec-packages/issues/8170)) ([6e46b45](https://github.com/AztecProtocol/aztec-packages/commit/6e46b459e67c090a4ffe496880e47c05855f9df4))
+* **Protogalaxy:** Isolate some state and clarify skipped zero computation ([#8173](https://github.com/AztecProtocol/aztec-packages/issues/8173)) ([7395b95](https://github.com/AztecProtocol/aztec-packages/commit/7395b95672e94318de695dc0fc71863ef31b2e30))
+* **Protogalaxy:** Move state out of Instances ([#8177](https://github.com/AztecProtocol/aztec-packages/issues/8177)) ([cd5d2df](https://github.com/AztecProtocol/aztec-packages/commit/cd5d2dfe7150fa9bd64945aa6c1a66dfa4be1536))
+* Replace relative paths to noir-protocol-circuits ([6f21545](https://github.com/AztecProtocol/aztec-packages/commit/6f2154584315f74c0c0f9f1d2c2bc5272968fb6c))
+
 ## [0.50.1](https://github.com/AztecProtocol/aztec-packages/compare/aztec-packages-v0.50.0...aztec-packages-v0.50.1) (2024-08-23)
 
 
